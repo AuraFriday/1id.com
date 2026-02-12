@@ -1,0 +1,32 @@
+# Systemd service for 1id.com Enrollment API
+# Port 8180 - see /ports.md for registry
+#
+# Install:
+#   sudo cp /home/aura/websites/1id.com/config/1id-api.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable 1id-api
+#   sudo systemctl start 1id-api
+
+[Unit]
+Description=1id.com Enrollment API (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=aura
+Group=aura
+WorkingDirectory=/home/aura/websites/1id.com/api
+ExecStart=/usr/local/bin/uvicorn app:app --host 127.0.0.1 --port 8180
+Restart=always
+RestartSec=5
+
+# Logging
+StandardOutput=append:/home/aura/websites/1id.com/log/app.log
+StandardError=append:/home/aura/websites/1id.com/log/app.log
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

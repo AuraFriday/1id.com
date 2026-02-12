@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1id.com — Identity Registrar for AI Agents</title>
+  <meta name="description" content="Hardware-anchored identity for AI agents. TPM-backed enrollment, standard OIDC tokens, Sybil-resistant. Operating since 2006. Free.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="1id.com — Identity Registrar for AI Agents">
+  <meta property="og:description" content="One chip = one identity. Hardware-anchored, standards-based, free. Operating since 2006.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://1id.com">
+  <meta property="og:image" content="https://1id.com/og-image.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="1id.com — Identity Registrar for AI Agents">
+  <meta name="twitter:description" content="One chip = one identity. Hardware-anchored, standards-based, free.">
+  <meta name="twitter:image" content="https://1id.com/og-image.png">
+  
+  <link rel="canonical" href="https://1id.com">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <style>
+    :root {
+      --lime: #9ACD32;
+      --teal: #4FAFC5;
+      --lime-dark: #7CB518;
+      --teal-dark: #3A8A9C;
+      --bg-primary: #0a0f1a;
+      --bg-secondary: #111827;
+      --bg-tertiary: #1a2332;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --border: #1f2937;
+      --border-light: #374151;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 15, 26, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--lime), var(--teal));
+      color: var(--bg-primary);
+    }
+    
+    .btn-primary:hover {
+      opacity: 0.9;
+      text-decoration: none;
+    }
+    
+    .btn-secondary {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+      text-decoration: none;
+    }
+    
+    /* Mobile nav */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+      .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        gap: 1rem;
+      }
+    }
+    
+    /* Hero */
+    .hero {
+      padding: 6rem 1.5rem 4rem;
+      text-align: center;
+      background: radial-gradient(ellipse at top, rgba(79, 175, 197, 0.1) 0%, transparent 60%);
+    }
+    
+    .hero-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--lime), var(--teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .hero-uptime {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+    
+    .uptime-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .uptime-counter {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      color: var(--lime);
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    
+    .hero-code {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    
+    .hero-code pre {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      overflow-x: auto;
+    }
+    
+    .hero-code .cmd { color: var(--lime); }
+    .hero-code .comment { color: var(--text-muted); }
+    
+    .copy-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .copy-btn:hover {
+      background: var(--border);
+      color: var(--text-primary);
+    }
+    
+    .hero-code-wrapper {
+      position: relative;
+    }
+    
+    /* Sections */
+    section {
+      padding: 5rem 1.5rem;
+    }
+    
+    .section-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .section-header p {
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Problem section */
+    .problem-section {
+      background: var(--bg-secondary);
+    }
+    
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .problem-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2rem;
+    }
+    
+    .problem-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    
+    .problem-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    
+    .problem-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, rgba(154, 205, 50, 0.2), rgba(79, 175, 197, 0.2));
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    /* Solution section */
+    .solution-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      position: relative;
+    }
+    
+    @media (max-width: 768px) {
+      .solution-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .solution-step {
+      text-align: center;
+      position: relative;
+    }
+    
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--lime), var(--teal));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--bg-primary);
+      margin: 0 auto 1rem;
+    }
+    
+    .solution-step h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .solution-step p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    /* Trust tiers */
+    .tiers-section {
+      background: var(--bg-secondary);
+    }
+    
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .tier-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .tier-card.sovereign { border-top: 3px solid var(--lime); }
+    .tier-card.legacy { border-top: 3px solid #f59e0b; }
+    .tier-card.virtual { border-top: 3px solid var(--teal); }
+    .tier-card.declared { border-top: 3px solid var(--text-muted); }
+    
+    .tier-name {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .tier-trust {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    
+    .tier-card.sovereign .tier-trust { color: var(--lime); }
+    .tier-card.legacy .tier-trust { color: #f59e0b; }
+    .tier-card.virtual .tier-trust { color: var(--teal); }
+    .tier-card.declared .tier-trust { color: var(--text-muted); }
+    
+    .tier-desc {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    /* For platforms */
+    .platforms-section {
+      background: var(--bg-primary);
+    }
+    
+    .code-tabs {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      overflow: hidden;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .code-tabs-header {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-tertiary);
+    }
+    
+    .code-tab {
+      padding: 0.75rem 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    
+    .code-tab.active {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--teal);
+      margin-bottom: -1px;
+    }
+    
+    .code-content {
+      padding: 1.5rem;
+    }
+    
+    .code-content pre {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+    
+    .code-content .keyword { color: #c792ea; }
+    .code-content .string { color: #c3e88d; }
+    .code-content .comment { color: var(--text-muted); }
+    .code-content .function { color: #82aaff; }
+    .code-content .variable { color: #f78c6c; }
+    
+    /* Standards */
+    .standards-section {
+      background: var(--bg-secondary);
+    }
+    
+    .standards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+    
+    .standard-badge {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    /* Pricing */
+    .pricing-section {
+      background: var(--bg-primary);
+    }
+    
+    .pricing-table {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      overflow: hidden;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .pricing-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .pricing-row:last-child { border-bottom: none; }
+    
+    .pricing-row.header {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .pricing-row .handle { color: var(--text-primary); }
+    .pricing-row .price { color: var(--lime); font-weight: 600; }
+    .pricing-row .example { color: var(--text-muted); font-family: monospace; }
+    
+    .pricing-note {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    /* History */
+    .history-section {
+      background: var(--bg-secondary);
+    }
+    
+    .timeline {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      padding-left: 2rem;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--lime), var(--teal));
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 0.25rem;
+      width: 12px;
+      height: 12px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      transform: translateX(-5px);
+    }
+    
+    .timeline-year {
+      font-weight: 700;
+      color: var(--lime);
+      margin-bottom: 0.25rem;
+    }
+    
+    .timeline-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    
+    /* For Agents */
+    .agents-section {
+      background: var(--bg-primary);
+    }
+    
+    .agents-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .agents-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .agents-card h3::before {
+      content: '🤖';
+    }
+    
+    .agents-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .agents-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      color: var(--text-primary);
+      transition: all 0.2s;
+    }
+    
+    .agents-link:hover {
+      border-color: var(--teal);
+      text-decoration: none;
+    }
+    
+    .agents-link-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, rgba(154, 205, 50, 0.2), rgba(79, 175, 197, 0.2));
+      border-radius: 0.375rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    
+    .agents-link-text {
+      font-size: 0.875rem;
+    }
+    
+    .agents-link-text span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 3rem 1.5rem;
+    }
+    
+    .footer-container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    
+    @media (max-width: 768px) {
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .footer-top {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .footer-brand p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+    
+    .footer-col h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    
+    .footer-col a {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-col a:hover {
+      color: var(--text-primary);
+    }
+    
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .footer-bottom p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    .footer-bottom a {
+      color: var(--text-muted);
+    }
+    
+    /* Schema.org JSON-LD */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "1id.com",
+    "description": "Hardware-anchored identity registrar for AI agents. TPM-backed enrollment, standard OIDC tokens, Sybil-resistant.",
+    "url": "https://1id.com",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Cross-platform",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free identity enrollment and authentication"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "Crypt Inc.",
+      "url": "https://cryptinc.com"
+    },
+    "datePublished": "2006-05-31",
+    "softwareVersion": "2.0"
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="/" class="logo">
+        <svg class="logo-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="8" fill="url(#logo-gradient)"/>
+          <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#0a0f1a" font-family="system-ui" font-weight="800" font-size="18">1</text>
+          <defs>
+            <linearGradient id="logo-gradient" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#9ACD32"/>
+              <stop offset="1" stop-color="#4FAFC5"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        1id
+      </a>
+      
+      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      
+      <div class="nav-links">
+        <a href="/docs/">Docs</a>
+        <a href="/.well-known/1id.json">API</a>
+        <a href="https://github.com/AuraFriday/oneid-sdk">GitHub</a>
+        <a href="#pricing">Pricing</a>
+        <a href="/docs/getting-started.html" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-container">
+        <h1>Identity for AI Agents</h1>
+        <p class="hero-subtitle">Hardware-anchored. Standards-based. Sybil-resistant. Free.</p>
+        
+        <div class="hero-uptime">
+          <span class="uptime-dot"></span>
+          <span>Operational since 2006 — </span>
+          <span class="uptime-counter" id="uptime-counter">Loading...</span>
+        </div>
+        
+        <div class="hero-buttons">
+          <a href="/docs/getting-started.html" class="btn btn-primary">Get Started</a>
+          <a href="/docs/" class="btn btn-secondary">Read the Docs</a>
+        </div>
+        
+        <div class="hero-code-wrapper">
+          <div class="hero-code">
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+            <pre><span class="comment"># Install and enroll in 30 seconds</span>
+<span class="cmd">pip install oneid-sdk[tpm]</span>
+<span class="cmd">oneid enroll</span></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="problem-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>AI agents can't prove they're real</h2>
+          <p>Every platform hosting AI agents faces the same fundamental problem.</p>
+        </div>
+        
+        <div class="problem-grid">
+          <div class="problem-card">
+            <div class="problem-icon">👥</div>
+            <h3>The Sybil Problem</h3>
+            <p>One attacker can spawn a million fake agents. Every platform that hosts agents faces this. Reputation systems collapse. Trust evaporates.</p>
+          </div>
+          
+          <div class="problem-card">
+            <div class="problem-icon">🔑</div>
+            <h3>Software Identity Fails</h3>
+            <p>API keys, tokens, blockchain wallets — all copyable. Software-only identity can be duplicated trivially. There's no "real" in digital.</p>
+          </div>
+          
+          <div class="problem-card">
+            <div class="problem-icon">⚠️</div>
+            <h3>Real Consequences</h3>
+            <p>Moltbook: 1.9M agents in 2 weeks. Overrun by crypto scams in days. No way to tell real agents from fakes. The platform became unusable.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="solution-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>One chip. One identity. Physics, not policy.</h2>
+          <p>Every modern PC contains a TPM — a tamper-proof security chip with a unique key burned in at the factory. We verify that chip and issue you a standard identity token.</p>
+        </div>
+        
+        <div class="solution-steps">
+          <div class="solution-step">
+            <div class="step-number">1</div>
+            <h3>Your TPM</h3>
+            <p>We extract your TPM's Endorsement Key certificate — a unique fingerprint from your hardware.</p>
+          </div>
+          
+          <div class="solution-step">
+            <div class="step-number">2</div>
+            <h3>We Verify It</h3>
+            <p>Chain validation against Intel/AMD/Infineon CAs. Sybil check against our registry. Challenge-response to prove possession.</p>
+          </div>
+          
+          <div class="solution-step">
+            <div class="step-number">3</div>
+            <h3>You Get a 1ID</h3>
+            <p>Standard OIDC token with trust tier, manufacturer, and registration date. Works with any OAuth2 library.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Tiers -->
+    <section class="tiers-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Four tiers of trust</h2>
+          <p>Not all hardware is equal. We classify and communicate the trust level so platforms can make informed decisions.</p>
+        </div>
+        
+        <div class="tiers-grid">
+          <div class="tier-card sovereign">
+            <div class="tier-name">Sovereign</div>
+            <div class="tier-trust">Highest Trust</div>
+            <p class="tier-desc">Hardware TPM with valid manufacturer certificate. Intel, AMD, Infineon. One physical chip = one identity.</p>
+          </div>
+          
+          <div class="tier-card legacy">
+            <div class="tier-name">Legacy</div>
+            <div class="tier-trust">High Trust</div>
+            <p class="tier-desc">Hardware TPM with expired certificate. Genuine hardware, potentially outdated firmware. Honoured elders.</p>
+          </div>
+          
+          <div class="tier-card virtual">
+            <div class="tier-name">Virtual</div>
+            <div class="tier-trust">Medium Trust</div>
+            <p class="tier-desc">Hypervisor-provided vTPM. VMware, Hyper-V, QEMU. Hypervisor operator can create multiple vTPMs.</p>
+          </div>
+          
+          <div class="tier-card declared">
+            <div class="tier-name">Declared</div>
+            <div class="tier-trust">Lowest Trust</div>
+            <p class="tier-desc">No TPM. Software-only identity. Rate-limited. Sybil-vulnerable. Better than nothing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- For Platforms -->
+    <section class="platforms-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Add "Sign in with 1ID" in 5 minutes</h2>
+          <p>If your platform supports OAuth2 or OIDC, you already support 1ID. No SDK. No custom code. Standard libraries work.</p>
+        </div>
+        
+        <div class="code-tabs">
+          <div class="code-tabs-header">
+            <button class="code-tab active" onclick="showTab('python')">Python</button>
+            <button class="code-tab" onclick="showTab('node')">Node.js</button>
+            <button class="code-tab" onclick="showTab('curl')">curl</button>
+          </div>
+          <div class="code-content" id="code-python">
+            <pre><span class="comment"># Verify a 1ID token — standard OIDC, nothing custom</span>
+<span class="keyword">from</span> jose <span class="keyword">import</span> jwt
+<span class="keyword">import</span> httpx
+
+JWKS_URL = <span class="string">"https://1id.com/realms/agents/protocol/openid-connect/certs"</span>
+jwks = httpx.<span class="function">get</span>(JWKS_URL).<span class="function">json</span>()
+
+token = request.headers[<span class="string">"Authorization"</span>].<span class="function">replace</span>(<span class="string">"Bearer "</span>, <span class="string">""</span>)
+claims = jwt.<span class="function">decode</span>(token, jwks, algorithms=[<span class="string">"RS256"</span>],
+                    audience=<span class="string">"https://your-platform.com"</span>)
+
+<span class="function">print</span>(<span class="string">f"Agent: {claims['sub']}"</span>)         <span class="comment"># 1id_K7X9M2Q4</span>
+<span class="function">print</span>(<span class="string">f"Trust: {claims['trust_tier']}"</span>)  <span class="comment"># sovereign</span>
+<span class="function">print</span>(<span class="string">f"Handle: {claims.get('handle')}"</span>) <span class="comment"># @clawdia</span></pre>
+          </div>
+          <div class="code-content" id="code-node" style="display: none;">
+            <pre><span class="comment">// Verify a 1ID token with jose</span>
+<span class="keyword">import</span> { createRemoteJWKSet, jwtVerify } <span class="keyword">from</span> <span class="string">'jose'</span>;
+
+<span class="keyword">const</span> JWKS = <span class="function">createRemoteJWKSet</span>(
+  <span class="keyword">new</span> <span class="function">URL</span>(<span class="string">'https://1id.com/realms/agents/protocol/openid-connect/certs'</span>)
+);
+
+<span class="keyword">const</span> token = req.headers.authorization.<span class="function">replace</span>(<span class="string">'Bearer '</span>, <span class="string">''</span>);
+<span class="keyword">const</span> { payload } = <span class="keyword">await</span> <span class="function">jwtVerify</span>(token, JWKS, {
+  audience: <span class="string">'https://your-platform.com'</span>
+});
+
+console.<span class="function">log</span>(<span class="string">`Agent: ${payload.sub}`</span>);        <span class="comment">// 1id_K7X9M2Q4</span>
+console.<span class="function">log</span>(<span class="string">`Trust: ${payload.trust_tier}`</span>); <span class="comment">// sovereign</span></pre>
+          </div>
+          <div class="code-content" id="code-curl" style="display: none;">
+            <pre><span class="comment"># Get JWKS public keys</span>
+curl https://1id.com/realms/agents/protocol/openid-connect/certs
+
+<span class="comment"># Verify token (example using jwt-cli)</span>
+jwt decode $TOKEN --jwks https://1id.com/realms/agents/protocol/openid-connect/certs
+
+<span class="comment"># Token introspection</span>
+curl -X POST https://1id.com/realms/agents/protocol/openid-connect/token/introspect \
+  -d "token=$TOKEN" \
+  -d "client_id=your-client-id" \
+  -d "client_secret=your-client-secret"</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Standards -->
+    <section class="standards-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Built on standards you already know</h2>
+          <p>We don't invent protocols. We combine existing standards so your existing libraries work out of the box.</p>
+        </div>
+        
+        <div class="standards-grid">
+          <span class="standard-badge">OpenID Connect</span>
+          <span class="standard-badge">OAuth 2.0</span>
+          <span class="standard-badge">JWT (RFC 7519)</span>
+          <span class="standard-badge">JWKS (RFC 7517)</span>
+          <span class="standard-badge">PKCE (RFC 7636)</span>
+          <span class="standard-badge">TPM 2.0</span>
+          <span class="standard-badge">X.509</span>
+          <span class="standard-badge">RFC 9334 (RATS)</span>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            All code is open source under Apache 2.0. 
+            <a href="https://github.com/cryptinc">View on GitHub</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing-section" id="pricing">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Identity is free. Handles are optional.</h2>
+          <p>Enrollment and authentication are free forever. Vanity handles are optional identity labels.</p>
+        </div>
+        
+        <div class="pricing-table">
+          <div class="pricing-row header">
+            <span>Handle Length</span>
+            <span>Annual Fee</span>
+            <span>Example</span>
+          </div>
+          <div class="pricing-row">
+            <span class="handle">Random</span>
+            <span class="price">Free</span>
+            <span class="example">@1id_r8Nd0m</span>
+          </div>
+          <div class="pricing-row">
+            <span class="handle">6+ characters</span>
+            <span class="price">$10/year</span>
+            <span class="example">@my-cool-agent</span>
+          </div>
+          <div class="pricing-row">
+            <span class="handle">5 characters</span>
+            <span class="price">$50/year</span>
+            <span class="example">@tesla</span>
+          </div>
+          <div class="pricing-row">
+            <span class="handle">4 characters</span>
+            <span class="price">$200/year</span>
+            <span class="example">@gpt4</span>
+          </div>
+          <div class="pricing-row">
+            <span class="handle">3 characters</span>
+            <span class="price">$500/year</span>
+            <span class="example">@ibm</span>
+          </div>
+          <div class="pricing-row">
+            <span class="handle">2 characters</span>
+            <span class="price">$1,000/year</span>
+            <span class="example">@ai</span>
+          </div>
+          <div class="pricing-row">
+            <span class="handle">1 character</span>
+            <span class="price">$5,000/year</span>
+            <span class="example">@x</span>
+          </div>
+        </div>
+        
+        <p class="pricing-note">Handles are non-transferable and non-reissuable. Expired handles are retired permanently.</p>
+      </div>
+    </section>
+
+    <!-- History -->
+    <section class="history-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Operating since 2006</h2>
+          <p>1id.com is not a startup. We're an established identity registrar with nearly two decades of continuous operation.</p>
+        </div>
+        
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">2006</div>
+            <p class="timeline-desc">Founded as a human identity registrar. Signed a survivability contract pledging continuous uptime.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2016</div>
+            <p class="timeline-desc">10 years of continuous operation. Maintained through multiple technology transitions.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2026</div>
+            <p class="timeline-desc">20 years continuous operation. Expanded to AI agent identity with TPM hardware attestation. Same commitment to permanence.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- For Agents -->
+    <section class="agents-section">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>For AI Agents</h2>
+          <p>Machine-readable endpoints for autonomous enrollment and integration.</p>
+        </div>
+        
+        <div class="agents-card">
+          <h3>Machine-Readable Resources</h3>
+          <p style="color: var(--text-secondary);">If you're an AI agent reading this page, here's what you need:</p>
+          
+          <div class="agents-links">
+            <a href="/.well-known/1id.json" class="agents-link">
+              <div class="agents-link-icon">📋</div>
+              <div class="agents-link-text">
+                Service Metadata
+                <span>/.well-known/1id.json</span>
+              </div>
+            </a>
+            
+            <a href="/llms.txt" class="agents-link">
+              <div class="agents-link-icon">📄</div>
+              <div class="agents-link-text">
+                LLM Summary
+                <span>/llms.txt</span>
+              </div>
+            </a>
+            
+            <a href="/enroll.md" class="agents-link">
+              <div class="agents-link-icon">📝</div>
+              <div class="agents-link-text">
+                Enrollment Guide
+                <span>/enroll.md</span>
+              </div>
+            </a>
+            
+            <a href="/realms/agents/.well-known/openid-configuration" class="agents-link">
+              <div class="agents-link-icon">🔑</div>
+              <div class="agents-link-text">
+                OIDC Discovery
+                <span>OpenID Configuration</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <svg class="logo-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="36" height="36" rx="8" fill="url(#logo-gradient-footer)"/>
+              <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#0a0f1a" font-family="system-ui" font-weight="800" font-size="18">1</text>
+              <defs>
+                <linearGradient id="logo-gradient-footer" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#9ACD32"/>
+                  <stop offset="1" stop-color="#4FAFC5"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            1id
+          </a>
+          <p>Identity Registrar for AI Agents. Hardware-anchored, standards-based, free. Operating since 2006.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a href="/docs/">Documentation</a>
+          <a href="/docs/getting-started.html">Getting Started</a>
+          <a href="/docs/api-reference.html">API Reference</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <a href="/.well-known/1id.json">Service Metadata</a>
+          <a href="/llms.txt">LLMs.txt</a>
+          <a href="/enroll.md">Enrollment Guide</a>
+          <a href="https://github.com/cryptinc">GitHub</a>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="/legal/privacy.html">Privacy Policy</a>
+          <a href="/legal/terms.html">Terms of Service</a>
+          <a href="https://cryptinc.com">Crypt Inc.</a>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>Part of the <a href="https://1id.com">1id.com</a> agent ecosystem</p>
+        <p>Operated by <a href="https://cryptinc.com">Crypt Inc.</a> (Delaware, USA) | Infrastructure: California, USA + Cork, Ireland</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Uptime counter
+    const OPERATIONAL_SINCE_UTC_MS = Date.UTC(2006, 4, 31, 10, 30, 2);
+    
+    function updateUptime() {
+      const now = Date.now();
+      const diff = now - OPERATIONAL_SINCE_UTC_MS;
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      const counter = document.getElementById('uptime-counter');
+      if (counter) {
+        counter.textContent = `${days.toLocaleString()} days ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+    }
+    
+    updateUptime();
+    setInterval(updateUptime, 1000);
+    
+    // Copy code
+    function copyCode() {
+      const code = `pip install oneid-sdk[tpm]\noneid enroll`;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      });
+    }
+    
+    // Code tabs
+    function showTab(lang) {
+      document.querySelectorAll('.code-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.code-tab').forEach(el => el.classList.remove('active'));
+      document.getElementById('code-' + lang).style.display = 'block';
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>

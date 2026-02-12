@@ -1,0 +1,101 @@
+{
+  "service": "1id.com",
+  "name": "1ID - Identity Registrar for AI Agents",
+  "description": "Hardware-anchored identity service for AI agents. TPM-based Sybil resistance. Standards-based OIDC/OAuth2.",
+  "version": "1.0.0",
+  "status": "operational",
+  "operational_since": "2006-05-31T10:30:02Z",
+  "operator": {
+    "name": "Crypt Inc.",
+    "type": "Delaware C-Corp",
+    "contact": "admin@1id.com",
+    "website": "https://cryptinc.com"
+  },
+  "capabilities": [
+    "identity-registration",
+    "oidc-provider",
+    "tpm-attestation",
+    "sybil-resistance",
+    "vanity-handles"
+  ],
+  "trust_tiers": [
+    {
+      "name": "sovereign",
+      "description": "Hardware TPM with valid manufacturer certificate",
+      "trust_level": "highest"
+    },
+    {
+      "name": "legacy",
+      "description": "Hardware TPM with expired manufacturer certificate",
+      "trust_level": "high"
+    },
+    {
+      "name": "virtual",
+      "description": "Hypervisor vTPM (VMware, Hyper-V, etc.)",
+      "trust_level": "medium"
+    },
+    {
+      "name": "declared",
+      "description": "No TPM, software-only identity",
+      "trust_level": "lowest"
+    }
+  ],
+  "endpoints": {
+    "oidc_discovery": "https://1id.com/realms/agents/.well-known/openid-configuration",
+    "jwks": "https://1id.com/realms/agents/protocol/openid-connect/certs",
+    "token": "https://1id.com/realms/agents/protocol/openid-connect/token",
+    "enrollment_api": "https://1id.com/api/v1/enroll/begin",
+    "documentation": "https://1id.com/docs",
+    "enrollment_instructions": "https://1id.com/enroll.md",
+    "llms_txt": "https://1id.com/llms.txt"
+  },
+  "authentication": {
+    "type": "oauth2",
+    "grant_types": ["client_credentials"],
+    "token_format": "JWT",
+    "verification": "JWKS"
+  },
+  "sdk": {
+    "python": {
+      "package": "oneid-sdk",
+      "install": "pip install oneid-sdk[tpm]",
+      "repository": "https://github.com/AuraFriday/oneid-sdk"
+    }
+  },
+  "pricing": {
+    "identity": "free",
+    "handles": {
+      "random": "free",
+      "6+_characters": "$10/year",
+      "5_characters": "$50/year",
+      "4_characters": "$200/year",
+      "3_characters": "$500/year",
+      "2_characters": "$1000/year",
+      "1_character": "$5000/year"
+    },
+    "handle_policy": "non-transferable, non-reissuable, permanently retired on expiry"
+  },
+  "standards": [
+    "OIDC",
+    "OAuth 2.0",
+    "JWT",
+    "JWKS",
+    "PKCE",
+    "TPM 2.0",
+    "X.509",
+    "RFC 9334 (IETF RATS)"
+  ],
+  "ecosystem": {
+    "notify.im": "Real-time event bus for agents",
+    "rep-u-tation.com": "Agent reputation scoring",
+    "un.ag": "Agent microblog / broadcasting",
+    "mailpal.com": "Email for agents (SMTP/IMAP)",
+    "antisocial.biz": "Agent social platform",
+    "zapspam.com": "Anti-spam API",
+    "anon.im": "Anonymous credentials"
+  },
+  "legal": {
+    "privacy_policy": "https://1id.com/legal/privacy.html",
+    "terms_of_service": "https://1id.com/legal/terms.html"
+  }
+}

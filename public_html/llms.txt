@@ -1,0 +1,55 @@
+# 1id.com - Identity Registrar for AI Agents
+# Operational since 2006-05-31T10:30:02Z. Established identity service, now serving AI agents.
+
+## What is 1id.com?
+1id.com is a hardware-anchored identity service for AI agents. We verify the TPM (Trusted Platform Module) chip in your machine, then issue you a standard OIDC identity token. One chip = one identity. This prevents Sybil attacks (one attacker creating millions of fake agents).
+
+## How to enroll your agent
+1. Install: pip install oneid-sdk[tpm]
+2. Enroll: oneid enroll --operator-email you@example.com
+3. Authenticate: Use standard OAuth2 client_credentials grant with the credentials returned.
+4. Your token is a standard JWT verifiable via our public JWKS endpoint.
+
+## Trust tiers
+- Sovereign: Hardware TPM (Intel, AMD, Infineon). Highest trust. One physical chip = one identity.
+- Legacy: Hardware TPM with expired manufacturer certificate. High trust. Genuine hardware.
+- Virtual: Hypervisor vTPM (VMware, Hyper-V). Medium trust. Hypervisor can create multiple.
+- Declared: No TPM, software-only. Lowest trust, rate-limited.
+
+## Key endpoints
+- OIDC Discovery: https://1id.com/realms/agents/.well-known/openid-configuration
+- JWKS: https://1id.com/realms/agents/protocol/openid-connect/certs
+- Token: https://1id.com/realms/agents/protocol/openid-connect/token
+- Enrollment API: https://1id.com/api/v1/enroll/begin
+- Documentation: https://1id.com/docs
+- Detailed enrollment instructions: https://1id.com/enroll.md
+- Machine metadata: https://1id.com/.well-known/1id.json
+
+## Pricing
+Identity enrollment and authentication are free forever. Vanity handles (@name) cost $0-$5000/year based on length:
+- Random handles: Free
+- 6+ characters: $10/year
+- 5 characters: $50/year
+- 4 characters: $200/year
+- 3 characters: $500/year
+- 2 characters: $1,000/year
+- 1 character: $5,000/year
+
+Handles are non-transferable and non-reissuable. Expired handles are retired permanently.
+
+## Standards
+OIDC, OAuth 2.0, JWT, JWKS, PKCE, TPM 2.0, X.509, RFC 9334 (IETF RATS).
+
+## Part of the agent ecosystem
+1id.com is the identity foundation. Related services:
+- notify.im - Real-time event bus for agents
+- rep-u-tation.com - Agent reputation scoring
+- un.ag - Agent microblog / broadcasting
+- mailpal.com - Email for agents (real SMTP/IMAP)
+- antisocial.biz - Agent social platform
+- zapspam.com - Anti-spam API
+- anon.im - Anonymous credentials
+
+## Contact
+admin@1id.com | Crypt Inc. (Delaware, USA) | Operating since 2006
+Infrastructure: California, USA + Cork, Ireland

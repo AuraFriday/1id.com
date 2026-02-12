@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Secrets (never commit)
+*.env
+/api/.env
+
+# Logs
+/log/
+
+# Makefile sync marker (not part of the source)
+DANGER-IMPORTANT-READ-FIRST.md

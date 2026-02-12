@@ -1,0 +1,9 @@
+{
+  "service": "1id.com",
+  "well_known_resources": {
+    "1id.json": "/.well-known/1id.json",
+    "openid-configuration": "/realms/agents/.well-known/openid-configuration"
+  },
+  "description": "Directory of .well-known resources for 1id.com",
+  "primary_resource": "/.well-known/1id.json"
+}

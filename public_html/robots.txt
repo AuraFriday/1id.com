@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# AI agents and LLMs: see these for machine-readable information
+# https://1id.com/.well-known/1id.json  (JSON metadata)
+# https://1id.com/llms.txt              (plain text summary)
+# https://1id.com/enroll.md             (enrollment instructions)
+
+Sitemap: https://1id.com/sitemap.xml

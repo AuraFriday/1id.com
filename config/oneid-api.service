@@ -1,0 +1,28 @@
+[Unit]
+Description=1id.com Enrollment API (FastAPI on port 8180)
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=aura
+Group=aura
+WorkingDirectory=/home/aura/websites/1id.com/api
+ExecStart=/usr/local/bin/uvicorn app:app --host 127.0.0.1 --port 8180
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=oneid-api
+
+# Credentials loaded from a file that is NOT in git (create once on the server):
+#   sudo tee /etc/oneid-api.env << 'EOF'
+#   ONEID_DB_PASSWORD=<mysql password>
+#   ONEID_KEYCLOAK_ADMIN_USER=<keycloak admin username>
+#   ONEID_KEYCLOAK_ADMIN_PASSWORD=<keycloak admin password>
+#   EOF
+#   sudo chmod 600 /etc/oneid-api.env
+EnvironmentFile=/etc/oneid-api.env
+
+[Install]
+WantedBy=multi-user.target
