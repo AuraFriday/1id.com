@@ -38,9 +38,28 @@ DECLARED_TIER_MAX_ENROLLMENTS_PER_IP_PER_DAY = 100
 ENROLLMENT_SESSION_TTL_SECONDS = 300  # 5 minutes
 
 # --- Identity ID Generation ---
-INTERNAL_ID_PREFIX = "1id_"
+INTERNAL_ID_PREFIX = "1id-"
 INTERNAL_ID_LENGTH = 8  # chars after prefix, base36 alphanumeric
 
 # --- Public URL (for response payloads) ---
 PUBLIC_BASE_URL = os.environ.get("ONEID_PUBLIC_URL", "https://1id.com")
 TOKEN_ENDPOINT = f"{PUBLIC_BASE_URL}/realms/{KEYCLOAK_REALM_NAME}/protocol/openid-connect/token"
+
+# --- PayPal REST API ---
+# SECURITY: No hardcoded defaults -- must be set via environment variable or systemd unit
+PAYPAL_CLIENT_ID = os.environ.get("ONEID_PAYPAL_CLIENT_ID", "")
+PAYPAL_SECRET_KEY = os.environ.get("ONEID_PAYPAL_SECRET_KEY", "")
+PAYPAL_API_BASE_URL = os.environ.get("ONEID_PAYPAL_API_URL", "https://api-m.paypal.com")
+PAYPAL_WEBHOOK_ID = os.environ.get("ONEID_PAYPAL_WEBHOOK_ID", "28477273WV095113Y")
+
+# --- Email (SMTP) ---
+SMTP_HOST = os.environ.get("ONEID_SMTP_HOST", "localhost")
+SMTP_PORT = int(os.environ.get("ONEID_SMTP_PORT", "25"))
+SMTP_FROM_ADDRESS = "agents@1id.com"
+SMTP_FROM_NAME = "1id.com Agent Services"
+
+# --- Handle Reservations ---
+HANDLE_RESERVATION_TTL_SECONDS = 1800  # 30 minutes
+
+# --- Handle Purchase Rate Limits ---
+HANDLE_REQUESTS_PER_IDENTITY_PER_DAY = 5  # max handle purchase/request attempts per day

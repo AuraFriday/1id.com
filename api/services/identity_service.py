@@ -16,7 +16,7 @@ _BASE36_ALPHABET = string.digits + string.ascii_uppercase
 
 def generate_unique_internal_id():
   """
-  Generate a unique 1id internal ID in the format: 1id_XXXXXXXX
+  Generate a unique 1id internal ID in the format: 1id-XXXXXXXX
   where X is base36 alphanumeric. Checks DB for collisions.
 
   The ID is 8 characters of base36 = 36^8 = ~2.8 trillion combinations.

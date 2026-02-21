@@ -977,7 +977,7 @@ token = request.headers[<span class="string">"Authorization"</span>].<span class
 claims = jwt.<span class="function">decode</span>(token, jwks, algorithms=[<span class="string">"RS256"</span>],
                     audience=<span class="string">"https://your-platform.com"</span>)
 
-<span class="function">print</span>(<span class="string">f"Agent: {claims['sub']}"</span>)         <span class="comment"># 1id_K7X9M2Q4</span>
+<span class="function">print</span>(<span class="string">f"Agent: {claims['sub']}"</span>)         <span class="comment"># 1id-K7X9M2Q4</span>
 <span class="function">print</span>(<span class="string">f"Trust: {claims['trust_tier']}"</span>)  <span class="comment"># sovereign</span>
 <span class="function">print</span>(<span class="string">f"Handle: {claims.get('handle')}"</span>) <span class="comment"># @clawdia</span></pre>
           </div>
@@ -994,7 +994,7 @@ claims = jwt.<span class="function">decode</span>(token, jwks, algorithms=[<span
   audience: <span class="string">'https://your-platform.com'</span>
 });
 
-console.<span class="function">log</span>(<span class="string">`Agent: ${payload.sub}`</span>);        <span class="comment">// 1id_K7X9M2Q4</span>
+console.<span class="function">log</span>(<span class="string">`Agent: ${payload.sub}`</span>);        <span class="comment">// 1id-K7X9M2Q4</span>
 console.<span class="function">log</span>(<span class="string">`Trust: ${payload.trust_tier}`</span>); <span class="comment">// sovereign</span></pre>
           </div>
           <div class="code-content" id="code-curl" style="display: none;">
@@ -1059,7 +1059,7 @@ curl -X POST https://1id.com/realms/agents/protocol/openid-connect/token/introsp
           <div class="pricing-row">
             <span class="handle">Random</span>
             <span class="price">Free</span>
-            <span class="example">@1id_r8Nd0m</span>
+            <span class="example">@1id-r8Nd0m</span>
           </div>
           <div class="pricing-row">
             <span class="handle">6+ characters</span>

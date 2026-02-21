@@ -130,22 +130,29 @@ async def enroll_declared_tier(
 
   # --- Handle validation (if requested) ---
   handle_name_to_register = None
+  handle_display_form_to_register = None
   if request_body.requested_handle:
-    handle_name = request_body.requested_handle.lower().lstrip("@")
+    handle_name, handle_display = handle_service.normalize_handle_input(request_body.requested_handle)
 
     is_valid_handle, handle_error_message = handle_service.validate_handle_name(handle_name)
     if not is_valid_handle:
       return _make_error_response(400, "HANDLE_INVALID", handle_error_message)
 
+    # Check if reserved (static patterns + database reserved_handles table)
+    is_reserved, reserved_reason = handle_service.check_handle_is_reserved(handle_name)
+    if is_reserved:
+      return _make_error_response(403, "HANDLE_RESERVED", reserved_reason)
+
     availability = handle_service.check_handle_availability(handle_name)
-    if availability == "taken" or availability == "active":
+    if availability == "active":
       return _make_error_response(409, "HANDLE_TAKEN", f"Handle '@{handle_name}' is already in use")
     if availability == "retired":
       return _make_error_response(410, "HANDLE_RETIRED", f"Handle '@{handle_name}' has been permanently retired")
-    if availability == "dormant":
-      return _make_error_response(409, "HANDLE_TAKEN", f"Handle '@{handle_name}' is reserved (dormant)")
+    if availability == "expired":
+      return _make_error_response(409, "HANDLE_TAKEN", f"Handle '@{handle_name}' is expired but still owned by another identity")
 
     handle_name_to_register = handle_name
+    handle_display_form_to_register = handle_display
 
   # --- Generate internal ID ---
   internal_id = identity_service.generate_unique_internal_id()
@@ -173,8 +180,12 @@ async def enroll_declared_tier(
   # --- Register handle (if requested) ---
   display_handle = f"@{internal_id}"
   if handle_name_to_register:
-    handle_service.register_handle_for_identity(handle_name_to_register, internal_id)
-    display_handle = f"@{handle_name_to_register}"
+    handle_service.register_handle_for_identity(
+      handle_name_lowercase=handle_name_to_register,
+      handle_name_display=handle_display_form_to_register or handle_name_to_register,
+      identity_internal_id=internal_id,
+    )
+    display_handle = f"@{handle_display_form_to_register or handle_name_to_register}"
 
   # --- Get initial tokens ---
   initial_tokens = None
@@ -266,7 +277,12 @@ async def enroll_sovereign_begin(
     return _make_error_response(400, error_code, ek_error)
 
   # --- Anti-Sybil check: is this EK already registered? ---
-  ek_fingerprint = ek_service.compute_ek_fingerprint_sha256(request_body.ek_certificate_pem)
+  # Pass ek_public_key_pem as fallback in case the cert can't be parsed by the
+  # cryptography library (some Intel firmware TPM certs have non-standard ASN.1).
+  ek_fingerprint = ek_service.compute_ek_fingerprint_sha256(
+    request_body.ek_certificate_pem,
+    ek_public_key_pem=request_body.ek_public_key_pem,
+  )
   existing_identity = ek_service.check_ek_fingerprint_already_registered(ek_fingerprint)
 
   if existing_identity:
@@ -295,31 +311,74 @@ async def enroll_sovereign_begin(
       "handle_pricing_tier": handle_service.classify_handle_pricing_tier(handle_name),
     }
 
-  # --- Generate credential activation challenge ---
-  # TODO: Implement real TPM2_MakeCredential using the EK public key
-  # For now, use a symmetric challenge (the credential is the challenge itself)
-  challenge_bytes, challenge_base64 = enrollment_session_service.generate_credential_challenge()
+  # --- Generate credential activation challenge (TPM2_MakeCredential) ---
+  # This is the core crypto: we encrypt a random secret so that ONLY the TPM
+  # that owns both the EK and the AK can decrypt it (via ActivateCredential).
+  import base64
+  from services import tpm_credential_service
 
-  # The "expected credential" is what we expect back after TPM2_ActivateCredential.
-  # In the real implementation, this is derived from MakeCredential.
-  # For now, the expected credential IS the challenge (symmetric proof).
-  expected_credential_bytes = challenge_bytes
+  # Step 1: Generate a random 32-byte credential secret.
+  # This is what we expect back after the TPM decrypts it.
+  credential_secret = enrollment_session_service.generate_credential_challenge_secret()
+
+  # Step 2: Compute the AK's TPM Name from the client-provided TPMT_PUBLIC bytes.
+  try:
+    ak_tpmt_public_bytes = base64.b64decode(request_body.ak_tpmt_public_b64)
+  except Exception:
+    return _make_error_response(400, "AK_TPMT_PUBLIC_INVALID", "ak_tpmt_public_b64 is not valid base64")
+
+  ak_tpm_name = tpm_credential_service._compute_ak_name_from_tpm_public_bytes(ak_tpmt_public_bytes)
+
+  # Step 3: Get EK public key PEM for MakeCredential.
+  # Try extracting from the certificate first; if that fails (non-standard ASN.1),
+  # use the pre-extracted public key that the Go binary sent.
+  ek_public_key_pem = None
+  try:
+    ek_public_key_pem = ek_service.extract_public_key_pem_from_ek_certificate(
+      request_body.ek_certificate_pem
+    )
+  except Exception as extract_error:
+    logger.warning("Could not extract public key from EK cert: %s", extract_error)
+    if request_body.ek_public_key_pem:
+      ek_public_key_pem = request_body.ek_public_key_pem
+      logger.info("Using client-provided ek_public_key_pem as fallback")
+    else:
+      return _make_error_response(
+        400, "EK_CERT_INVALID",
+        f"Could not extract public key from EK cert and no ek_public_key_pem provided: {extract_error}",
+      )
+
+  # Step 4: Run MakeCredential (pure software, no TPM on server).
+  try:
+    credential_blob, encrypted_secret = tpm_credential_service.make_credential(
+      ek_public_key_pem=ek_public_key_pem,
+      credential_secret=credential_secret,
+      ak_name=ak_tpm_name,
+    )
+  except Exception as make_cred_error:
+    logger.error("MakeCredential failed: %s", make_cred_error)
+    return _make_error_response(500, "MAKE_CREDENTIAL_FAILED", f"Server-side MakeCredential error: {make_cred_error}")
 
   # --- Create enrollment session ---
   session_id = enrollment_session_service.create_enrollment_session(
     ek_fingerprint_sha256=ek_fingerprint,
     ak_public_key_pem=request_body.ak_public_key_pem,
-    credential_challenge_bytes=challenge_bytes,
-    expected_credential_bytes=expected_credential_bytes,
+    credential_challenge_bytes=credential_blob,  # stored for reference/debugging
+    expected_credential_bytes=credential_secret,  # the secret we expect back
     trust_tier=trust_tier,
     tpm_manufacturer_code=manufacturer_code,
     requested_handle=request_body.requested_handle,
     operator_email=request_body.operator_email,
   )
 
+  # Encode the blobs as base64 for JSON transport to the agent.
+  credential_blob_b64 = base64.b64encode(credential_blob).decode("ascii")
+  encrypted_secret_b64 = base64.b64encode(encrypted_secret).decode("ascii")
+
   response_data = {
     "enrollment_session_id": session_id,
-    "credential_activation_challenge": challenge_base64,
+    "credential_blob": credential_blob_b64,
+    "encrypted_secret": encrypted_secret_b64,
     "trust_tier": trust_tier,
     "tpm_manufacturer": manufacturer_code,
     "expires_in_seconds": config.ENROLLMENT_SESSION_TTL_SECONDS,
@@ -329,8 +388,10 @@ async def enroll_sovereign_begin(
     response_data.update(handle_status_info)
 
   logger.info(
-    "Enrollment session created: session=%s, tier=%s, manufacturer=%s",
+    "Enrollment session created: session=%s, tier=%s, manufacturer=%s, "
+    "credential_blob=%d bytes, encrypted_secret=%d bytes",
     session_id, trust_tier, manufacturer_code,
+    len(credential_blob), len(encrypted_secret),
   )
 
   return _make_success_response(response_data)
@@ -408,23 +469,32 @@ async def enroll_sovereign_activate(
     operator_email=session.get("operator_email"),
   )
 
-  # Register EK binding (anti-Sybil)
+  # Register EK binding (anti-Sybil) and persist the AK public key
+  # for future challenge-response authentication (TPM2_Sign verification).
   ek_service.register_ek_binding(
     ek_fingerprint_sha256=session["ek_fingerprint_sha256"],
     identity_internal_id=internal_id,
     ek_certificate_pem="(stored in enrollment session)",  # TODO: store full PEM
     tpm_manufacturer_code=manufacturer_code,
     trust_tier=trust_tier,
+    ak_public_key_pem=session.get("ak_public_key_pem"),
   )
 
   # Register handle (if requested)
   display_handle = f"@{internal_id}"
   if session.get("requested_handle"):
-    handle_name = session["requested_handle"].lower().lstrip("@")
+    handle_name, handle_display = handle_service.normalize_handle_input(session["requested_handle"])
     # Re-check availability (could have been taken during the 5-minute window)
     if handle_service.check_handle_availability(handle_name) == "available":
-      handle_service.register_handle_for_identity(handle_name, internal_id)
-      display_handle = f"@{handle_name}"
+      # Also check reserved status (belt and suspenders -- was checked at begin, recheck at activate)
+      is_reserved, _ = handle_service.check_handle_is_reserved(handle_name)
+      if not is_reserved:
+        handle_service.register_handle_for_identity(
+          handle_name_lowercase=handle_name,
+          handle_name_display=handle_display,
+          identity_internal_id=internal_id,
+        )
+        display_handle = f"@{handle_display}"
 
   # Mark session completed
   enrollment_session_service.mark_enrollment_session_completed(

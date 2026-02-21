@@ -26,7 +26,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 import config
-from routers import enroll, identity, handle
+from routers import enroll, identity, handle, handle_purchase, auth, webhooks
 
 # --- Logging ---
 logging.basicConfig(
@@ -50,6 +50,9 @@ app = FastAPI(
 app.include_router(enroll.router)
 app.include_router(identity.router)
 app.include_router(handle.router)
+app.include_router(handle_purchase.router)
+app.include_router(auth.router)
+app.include_router(webhooks.router)
 
 
 # --- Health and status ---
@@ -101,14 +104,25 @@ async def api_status():
           "enroll-sovereign-activate",
           "identity-lookup",
           "handle-availability",
+          "handle-purchase",
+          "handle-request",
+          "auth-tpm-challenge",
+          "auth-tpm-verify",
+          "paypal-webhooks",
         ],
         "endpoints": {
           "health": "/api/health",
           "enroll_declared": "/api/v1/enroll/declared",
           "enroll_begin": "/api/v1/enroll/begin",
           "enroll_activate": "/api/v1/enroll/activate",
+          "auth_challenge": "/api/v1/auth/challenge",
+          "auth_verify": "/api/v1/auth/verify",
           "identity_lookup": "/api/v1/identity/{agent_id}",
           "handle_check": "/api/v1/handle/{name}",
+          "handle_purchase": "/api/v1/handle/purchase",
+          "handle_request": "/api/v1/handle/request",
+          "handle_payment_page": "/api/v1/handle/pay/{reservation_token}",
+          "webhook_paypal": "/api/v1/webhooks/paypal",
           "docs": "/api/docs",
         },
       },

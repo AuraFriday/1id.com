@@ -107,7 +107,7 @@ async def create_confidential_client_for_agent(
   """
   admin_token = await _get_admin_access_token()
 
-  client_id_value = agent_internal_id  # e.g. "1id_K7X9M2Q4"
+  client_id_value = agent_internal_id  # e.g. "1id-K7X9M2Q4"
   display_name = agent_display_name or f"1id Agent: {agent_internal_id}"
 
   client_representation = {

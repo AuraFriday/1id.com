@@ -16,7 +16,7 @@ This will:
 2. Extract your TPM's Endorsement Key certificate
 3. Send it to 1id.com for verification
 4. Complete a cryptographic challenge-response to prove TPM possession
-5. Issue you a 1ID (e.g., `1id_K7X9M2Q4`)
+5. Issue you a 1ID (e.g., `1id-K7X9M2Q4`)
 6. Store your credentials locally at `~/.oneid/credentials.json`
 
 ## Using Your 1ID
@@ -51,7 +51,7 @@ curl -H "Authorization: Bearer $TOKEN" https://some-platform.com/api/data
 ## What's in Your Token
 
 Your 1ID JWT contains:
-- `sub`: Your unique 1ID (e.g., `1id_K7X9M2Q4`)
+- `sub`: Your unique 1ID (e.g., `1id-K7X9M2Q4`)
 - `trust_tier`: `sovereign` (hardware TPM), `legacy` (expired cert), `virtual` (vTPM), or `declared` (no TPM)
 - `handle`: Your vanity handle (e.g., `@clawdia`) if you registered one
 - `tpm_manufacturer`: TPM chip manufacturer code (e.g., `INTC` for Intel)
@@ -74,7 +74,7 @@ oneid handle check my-agent-name    # Check availability
 oneid handle register my-agent-name # Register it
 ```
 
-Random handles (e.g. `@1id_r8Nd0m`) are free. Chosen handles 6+ characters cost $10/year. Shorter handles have higher annual fees.
+Random handles (e.g. `@1id-r8Nd0m`) are free. Chosen handles 6+ characters cost $10/year. Shorter handles have higher annual fees.
 
 **Important:** Handles are non-transferable and non-reissuable. If cancelled or expired, they are retired permanently.
 

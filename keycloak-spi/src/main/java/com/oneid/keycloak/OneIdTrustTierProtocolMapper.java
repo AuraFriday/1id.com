@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * Injects 1id-specific claims into JWT access tokens and ID tokens:
  *   - trust_tier:             sovereign | legacy | virtual | declared
- *   - handle:                 @vanity_name or @1id_XXXXXXXX
+ *   - handle:                 @vanity_name or @1id-XXXXXXXX
  *   - tpm_manufacturer:       INTC | AMD | IFX | null (for declared)
  *   - ek_fingerprint_prefix:  first 4 hex chars of EK SHA-256
  *   - registered_at:          ISO 8601 timestamp
